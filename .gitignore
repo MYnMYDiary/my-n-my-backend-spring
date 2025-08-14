@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 
 .env
+postgres-data/
 
 ### STS ###
 .apt_generated
