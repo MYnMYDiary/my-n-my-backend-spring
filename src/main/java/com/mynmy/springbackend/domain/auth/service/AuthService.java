@@ -3,7 +3,7 @@ package com.mynmy.springbackend.domain.auth.service;
 import com.mynmy.springbackend.domain.auth.entity.RefreshToken;
 import com.mynmy.springbackend.domain.auth.repository.RefreshTokenRepository;
 import com.mynmy.springbackend.domain.user.User;
-import com.mynmy.springbackend.domain.user.UserRepository;
+import com.mynmy.springbackend.domain.user.repository.UserRepository;
 import com.mynmy.springbackend.security.jwt.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +19,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;

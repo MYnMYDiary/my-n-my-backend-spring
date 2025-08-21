@@ -1,4 +1,4 @@
-package com.mynmy.springbackend.domain.diary;
+package com.mynmy.springbackend.domain.diary.repository;
 
 import com.mynmy.springbackend.domain.diary.entity.Diary;
 import org.springframework.data.jpa.repository.JpaRepository;

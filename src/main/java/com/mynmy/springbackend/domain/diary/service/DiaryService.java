@@ -1,9 +1,9 @@
 package com.mynmy.springbackend.domain.diary.service;
 
+import com.mynmy.springbackend.domain.diary.dto.Request;
 import com.mynmy.springbackend.domain.diary.entity.Diary;
-import com.mynmy.springbackend.domain.diary.DiaryRepository;
-import com.mynmy.springbackend.domain.user.UserRepository;
-import com.mynmy.springbackend.domain.diary.dto.request.CreateDiaryRequest;
+import com.mynmy.springbackend.domain.diary.repository.DiaryRepository;
+import com.mynmy.springbackend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +18,19 @@ public class DiaryService {
      * 다이어리 생성
      *
      */
-    public Diary create(CreateDiaryRequest request) {
+    public Diary create(Request.create req) {
 
-        userRepository.findById(request.userId())
+        userRepository.findById(req.userId())
                 .orElseThrow(() -> new RuntimeException("해당 아이디의 사용자가 존재하지 않습니다."));
 
         Diary diary = Diary.builder()
-                .userId(request.userId())
-                .categoryId(request.categoryId())
-                .year(request.year())
-                .month(request.month())
-                .title(request.title())
-                .content(request.content())
-                .image(request.image())
+                .userId(req.userId())
+                .categoryId(req.categoryId())
+                .year(req.year())
+                .month(req.month())
+                .title(req.title())
+                .content(req.content())
+                .image(req.image())
                 .build();
 
         return diaryRepository.save(diary);

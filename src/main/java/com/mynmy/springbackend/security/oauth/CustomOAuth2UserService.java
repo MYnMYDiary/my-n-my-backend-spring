@@ -1,7 +1,7 @@
 package com.mynmy.springbackend.security.oauth;
 
 import com.mynmy.springbackend.domain.user.User;
-import com.mynmy.springbackend.domain.user.UserRepository;
+import com.mynmy.springbackend.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

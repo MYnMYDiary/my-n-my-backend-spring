@@ -4,16 +4,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ImageService {
 
     private final ImageRepository imageRepository;
+
+    /** 프로필 이미지 저장 */
+    public String saveProfileImage(MultipartFile image) throws IOException {
+        validateFile(image);
+        String uniqueName = createUniqueFilename(image.getOriginalFilename());
+        imageRepository.saveProfile(uniqueName, image.getBytes());
+        return uniqueName;
+    }
+
 
     /** 이미지 임시 저장 */
     public List<String> saveTempImages(List<MultipartFile> images) {
@@ -34,7 +42,8 @@ public class ImageService {
                 .toList();
     }
 
-    private void validateFile(MultipartFile file) {
+    /** 이미지 형식 검사*/
+    public void validateFile(MultipartFile file) {
         String contentType = file.getContentType();
         if (contentType == null ||
                 (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
@@ -42,8 +51,8 @@ public class ImageService {
         }
     }
 
-    /** 파일 이름 생성*/
-    private String createUniqueFilename(String originalFilename) {
+    /** 파일 이름 생성 */
+    public String createUniqueFilename(String originalFilename) {
         if (originalFilename == null || originalFilename.isBlank()) {
             // 파일명이 없으면 확장자 없이 UUID만 반환
             return UUID.randomUUID().toString();

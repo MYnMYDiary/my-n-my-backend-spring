@@ -1,6 +1,6 @@
 package com.mynmy.springbackend.domain.auth.web;
 
-import com.mynmy.springbackend.domain.user.UserRepository;
+import com.mynmy.springbackend.domain.user.repository.UserRepository;
 import com.mynmy.springbackend.domain.auth.service.AuthService;
 import com.mynmy.springbackend.domain.auth.service.AuthTokenService;
 import jakarta.servlet.http.HttpServletRequest;

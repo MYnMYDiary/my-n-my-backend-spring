@@ -19,7 +19,6 @@ import java.io.IOException;
 @Component
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthTokenService authTokenService;
 
     @Transactional
     @Override

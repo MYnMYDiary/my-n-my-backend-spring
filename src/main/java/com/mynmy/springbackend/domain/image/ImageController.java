@@ -1,6 +1,5 @@
 package com.mynmy.springbackend.domain.image;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,4 +26,5 @@ public class ImageController {
         List<String> savedFiles = imageService.saveTempImages(images);
         return ResponseEntity.ok(savedFiles);
     }
+
 }
