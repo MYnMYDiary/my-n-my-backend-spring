@@ -42,4 +42,8 @@ public class User extends BaseEntity {
         this.profileImage = profileImage;
         this.role = UserRole.USER;
     }
+
+    public User(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }

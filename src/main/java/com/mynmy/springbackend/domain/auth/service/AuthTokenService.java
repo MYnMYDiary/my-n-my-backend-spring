@@ -3,7 +3,7 @@ package com.mynmy.springbackend.domain.auth.service;
 import com.mynmy.springbackend.domain.auth.entity.RefreshToken;
 import com.mynmy.springbackend.domain.auth.repository.RefreshTokenRepository;
 import com.mynmy.springbackend.domain.user.User;
-import com.mynmy.springbackend.domain.user.UserRepository;
+import com.mynmy.springbackend.domain.user.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
