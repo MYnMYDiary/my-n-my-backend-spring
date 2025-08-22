@@ -21,9 +21,11 @@ services:
       dockerfile: Dockerfile
     container_name: spring-app
     ports:
-      - "8080:8080"
+      - "443:443" #SSL 포트 매핑
     depends_on:
       postgres:
         condition: service_healthy
     env_file:
       - .env
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro # 인증서 볼륨 마운트
