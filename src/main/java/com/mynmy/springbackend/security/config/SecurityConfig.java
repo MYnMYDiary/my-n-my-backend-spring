@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/**", "/login/**", "/image/**").permitAll() // 누구나 접근 가능
+                        .requestMatchers("/", "/auth/**", "/image/**").permitAll() // 누구나 접근 가능
                         .anyRequest().authenticated() // 나머지는 로그인된 사용자만
                 )
 
