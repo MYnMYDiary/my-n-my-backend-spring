@@ -1,19 +1,25 @@
 package com.mynmy.springbackend.domain.user;
 
 
+import com.mynmy.springbackend.domain.user.Dto.UserRequest;
+import com.mynmy.springbackend.domain.user.Dto.UserResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<String> updateImage(
             @PathVariable("userId") Long userId,
             @RequestParam("image") MultipartFile image
@@ -21,5 +27,11 @@ public class UserController {
         String url = userService.updateProfileImage(userId, image);
         return ResponseEntity.ok(url);
     }
+
+//    @GetMapping()
+//    public ResponseEntity<UserResponse> getUser(@AuthenticationPrincipal String email) {
+//        return
+//    }
+
 
 }
