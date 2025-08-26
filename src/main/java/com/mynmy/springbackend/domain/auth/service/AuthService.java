@@ -1,20 +1,14 @@
 package com.mynmy.springbackend.domain.auth.service;
 
-import com.mynmy.springbackend.domain.auth.entity.RefreshToken;
 import com.mynmy.springbackend.domain.auth.repository.RefreshTokenRepository;
 import com.mynmy.springbackend.domain.user.User;
 import com.mynmy.springbackend.domain.user.repository.UserRepository;
 import com.mynmy.springbackend.security.jwt.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,51 +17,80 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
-        String refreshToken = extractRefreshTokenFromCookie(request);
-        if (refreshToken == null) throw new RuntimeException("refresh token이 존재하지 않습니다.");
+    public String login(String email, String password, HttpServletResponse response) {
 
-        RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
-                .orElseThrow(() -> new RuntimeException("유효하지 않은 refresh token"));
+        // 사용자 조회
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        if (token.getExpiresAt().isBefore(Instant.now())) {
-            refreshTokenRepository.delete(token);
-            throw new RuntimeException("만료된 refresh token");
+        // 비밀번호 검증
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 사용자 ID를 기반으로 accessToken 재발급
-        User user = userRepository.findById(token.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        // refreshToken 발급 한 다음 redis에 저장
+        String refreshToken = jwtTokenProvider.createRefreshToken();
+        refreshTokenRepository.save(user.getEmail(), refreshToken);
 
-        String newAccessToken = jwtTokenProvider.createAccessToken(user.getEmail());
+        // 쿠키 생성
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
 
-        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+        response.addCookie(cookie); // 응답으로 쿠키 보내기
+
+        //accessToken 리턴
+        return jwtTokenProvider.createAccessToken(user.getEmail());
     }
 
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = extractRefreshTokenFromCookie(request);
-        if (refreshToken != null) {
-            refreshTokenRepository.findByToken(refreshToken)
-                    .ifPresent(refreshTokenRepository::delete);
-        }
+    public void logout(String email, HttpServletResponse response) {
 
-        // 쿠키 제거
+        // 1. 토큰 제거
+        refreshTokenRepository.delete(email);
+
+        // 2. 쿠키 제거
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
+
+        // 3. 응답으로 쿠기 전달
         response.addCookie(cookie);
-
-        return ResponseEntity.ok("로그아웃 완료");
     }
 
-    private String extractRefreshTokenFromCookie(HttpServletRequest request) {
-        if (request.getCookies() == null) return null;
-        return Arrays.stream(request.getCookies())
-                .filter(c -> c.getName().equals("refreshToken"))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse(null);
+    public String setAccessToken(String email) {
+
+        // 1. 사용자 검증
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 1. 리프레시 토큰 검증
+        refreshTokenRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("토큰이 만료됐거나 유효하지 않습니다."));
+
+        // 2. 새로운 accessToken 발급
+        return jwtTokenProvider.createAccessToken(user.getEmail());
     }
 
+    public void setRefreshToken(String email, HttpServletResponse response) {
+        // 1. 사용자 검증
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 2. 기존 토큰이 존재하는지 확인 후 존재한다면 삭제
+        if (refreshTokenRepository.findByEmail(user.getEmail()).isPresent()) {
+            refreshTokenRepository.delete(user.getEmail());
+        }
+
+        String refreshToken = jwtTokenProvider.createRefreshToken();
+        refreshTokenRepository.save(email, refreshToken);
+
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        response.addCookie(cookie);
+    }
 }

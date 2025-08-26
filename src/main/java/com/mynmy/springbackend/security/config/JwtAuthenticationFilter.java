@@ -35,12 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // 프론트가 보낸 Authorization 헤더에서 token 추출
-        String token = extractToken(request);
+        String accessToken = extractToken(request);
 
-        if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+        if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
 
             // 토큰 내부의 sub에서 사용자 이메일 추출
-            String email = jwtTokenProvider.getSubject(token);
+            String email = jwtTokenProvider.getSubject(accessToken);
 
             // 인증객체 생성( Spring Security에서 유저 인증 정보를 담는 기본 객체)
             UsernamePasswordAuthenticationToken authentication =
