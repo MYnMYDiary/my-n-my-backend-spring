@@ -23,6 +23,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/auth")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/image")
+                || path.startsWith("/oauth2")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 프론트가 보낸 Authorization 헤더에서 token 추출
         String token = extractToken(request);
 

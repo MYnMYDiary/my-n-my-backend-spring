@@ -13,7 +13,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalRestExceptionAdvice {
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException e) {
         return ResponseEntity.status(401).body(Map.of(
                 "error", e.getMessage()
