@@ -3,6 +3,7 @@ package com.mynmy.springbackend.domain.user;
 
 import com.mynmy.springbackend.domain.user.Dto.UserRequest;
 import com.mynmy.springbackend.domain.user.Dto.UserResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name="User", description = "사용자")
 @RequestMapping("/users")
 public class UserController {
 
