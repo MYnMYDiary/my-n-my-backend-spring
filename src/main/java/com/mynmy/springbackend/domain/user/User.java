@@ -6,44 +6,36 @@ import lombok.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor // 빌더용 생성자
 @NoArgsConstructor
 @Table(name = "\"user\"")
 public class User extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String provider; // 소셜 로그인 ex. google
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String providerId; // 구글 userId
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role;
+    @Builder.Default
+    private UserRole role =  UserRole.USER;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = true)
     private String nickname;
 
     @Column(nullable = true)
+    private String password;
+
+    @Column(nullable = true)
     private String profileImage;
 
-    @Builder
-    public User(String provider, String providerId, String name, String email, String nickname, String profileImage) {
-        this.provider = provider;
-        this.providerId = providerId;
-        this.name = name;
-        this.email = email;
-        this.nickname = nickname;
-        this.profileImage = profileImage;
-        this.role = UserRole.USER;
-    }
-
-    public User(String profileImage) {
-        this.profileImage = profileImage;
-    }
 }

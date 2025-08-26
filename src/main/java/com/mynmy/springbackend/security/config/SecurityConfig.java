@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,17 +33,32 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/**", "/image/**").permitAll() // 누구나 접근 가능
-                        .anyRequest().authenticated() // 나머지는 로그인된 사용자만
+                        .requestMatchers("/auth/signup").permitAll()
+                        .requestMatchers(
+                                "/",                      // 루트
+                                "/auth/**", // 로그인/회원가입 관련
+                                "/image/**",              // 이미지 접근
+                                "/swagger-ui.html",       // Swagger UI
+                                "/swagger-ui/**",         // Swagger UI 리소스
+                                "/v3/api-docs/**"         // OpenAPI docs
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
 
+                // 구글 로그인
                 .oauth2Login(oauth -> oauth
+                        .authorizationEndpoint(auth ->
+                                auth.baseUri("/oauth2/login") // ← /oauth2/authorization 대신 /oauth2/login 사용
+                        )
                         .successHandler(oAuth2SuccessHandler)
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
@@ -58,5 +75,11 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    // 비밀번호 암호화
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

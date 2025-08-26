@@ -7,6 +7,11 @@ build/
 .env
 postgres-data/
 temp/
+/src/main/resources/application-local.properties
+/images
+
+## Redis ##
+/redis-data
 
 ### STS ###
 .apt_generated

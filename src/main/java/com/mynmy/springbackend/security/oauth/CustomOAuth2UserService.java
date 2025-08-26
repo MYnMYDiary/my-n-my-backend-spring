@@ -39,8 +39,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .providerId(providerId)
                         .name(name)
                         .email(email)
-                        .nickname(null)
-                        .profileImage(null)
                         .build())
         );
 
