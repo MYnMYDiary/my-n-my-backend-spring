@@ -31,17 +31,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String name = (String) attributes.get("name");
         String email = (String) attributes.get("email");
 
-        Optional<User> userOpt = userRepository.findByProviderAndProviderId(provider, providerId);
-
-        User user = userOpt.orElseGet(() ->
-                userRepository.save(User.builder()
-                        .provider(provider)
-                        .providerId(providerId)
-                        .name(name)
-                        .email(email)
-                        .build())
-        );
-
+        // 이메일로 먼저 조회
+        User user = userRepository.findByEmail(email)
+                .map(existingUser -> {
+                    // provider 정보가 비어 있으면 업데이트
+                    if (existingUser.getProvider() == null) {
+                        existingUser.updateOAuthInfo(provider, providerId);
+                        return userRepository.save(existingUser);
+                    }
+                    return existingUser;
+                })
+                .orElseGet(() -> {
+                    // 신규 회원가입
+                    User newUser = User.builder()
+                            .provider(provider)
+                            .providerId(providerId)
+                            .name(name)
+                            .email(email)
+                            .build();
+                    return userRepository.save(newUser);
+                });
 
         // OAuth2User를 직접 리턴할 수 없으므로 CustomOAuth2User 객체로 감싸야 함
         return new CustomOAuth2User(user, attributes);
