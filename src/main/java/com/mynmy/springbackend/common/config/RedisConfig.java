@@ -1,4 +1,4 @@
-package com.mynmy.springbackend.config;
+package com.mynmy.springbackend.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -15,40 +15,43 @@ services:
       timeout: 5s
       retries: 5
 
-#  app:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: spring-app
-#    expose:
-#      - "8080" # nginx와 내부 통신만
-#    depends_on:
-#      postgres:
-#        condition: service_healthy
-#    env_file:
-#      - .env
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-app
+    expose:
+      - "8080" # nginx와 내부 통신만
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
 
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
     ports:
-      - "80:80" # HTTP만 사용
+      - "80:80" # nginx와 내부 통신만
+      - "443:443" # SSL 붙일 때
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-#    depends_on:
-#      - app
+    depends_on:
+      - app
 
   redis:
     image: redis:7
     restart: always
     container_name: redis
-    ports:
-      - "6379:6379"
+    expose:
+      - "6379"
     volumes:
       - ./redis-data:/data
-    command: [ "redis-server", "--appendonly", "yes" ]
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}" ]
+    env_file:
+      - .env
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ]
       interval: 5s
       timeout: 5s
       retries: 5
