@@ -6,7 +6,7 @@ import lombok.*;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor // 빌더용 생성자
 @NoArgsConstructor
 @Table(name = "\"user\"")
@@ -38,4 +38,8 @@ public class User extends BaseEntity {
     @Column(nullable = true)
     private String profileImage;
 
+    public void updateOAuthInfo(String provider, String providerId) {
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 }

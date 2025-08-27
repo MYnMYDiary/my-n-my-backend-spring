@@ -2,7 +2,6 @@ package com.mynmy.springbackend.security.oauth;
 
 import com.mynmy.springbackend.domain.user.User;
 import com.mynmy.springbackend.security.jwt.JwtTokenProvider;
-import com.mynmy.springbackend.domain.auth.service.AuthTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
