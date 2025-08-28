@@ -2,12 +2,14 @@ package com.mynmy.springbackend.domain.user;
 
 import com.mynmy.springbackend.domain.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Entity
 @Getter
-@Builder(toBuilder = true)
-@AllArgsConstructor // 빌더용 생성자
+@Entity
+@SuperBuilder(toBuilder = true)   // ✅ 여기!
 @NoArgsConstructor
 @Table(name = "\"user\"")
 public class User extends BaseEntity {

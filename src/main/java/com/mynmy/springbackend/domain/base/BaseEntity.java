@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +16,8 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @MappedSuperclass
+@NoArgsConstructor   // ← 기본 생성자 추가
+@SuperBuilder(toBuilder = true)
 public abstract class BaseEntity {
 
     @Id
