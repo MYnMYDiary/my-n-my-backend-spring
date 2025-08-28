@@ -1,5 +1,6 @@
 package com.mynmy.springbackend.domain.auth.service;
 
+import com.mynmy.springbackend.common.api.ResourceNotFoundException;
 import com.mynmy.springbackend.domain.auth.repository.RefreshTokenRepository;
 import com.mynmy.springbackend.domain.user.User;
 import com.mynmy.springbackend.domain.user.repository.UserRepository;
@@ -23,7 +24,7 @@ public class AuthService {
 
         // 사용자 조회
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 사용자 입니다."));
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(password, user.getPassword())) {

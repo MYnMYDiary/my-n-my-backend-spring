@@ -1,5 +1,6 @@
 package com.mynmy.springbackend.domain.auth.web;
 
+import com.mynmy.springbackend.common.api.ApiResponse;
 import com.mynmy.springbackend.domain.auth.service.AuthService;
 import com.mynmy.springbackend.domain.image.ImageService;
 import com.mynmy.springbackend.domain.user.Dto.UserRequest;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -52,9 +55,12 @@ public class AuthController {
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserRequest.Login req, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody UserRequest.Login req, HttpServletResponse response) {
         String accessToken = authService.login(req.email(), req.password(), response);
-        return ResponseEntity.ok(accessToken);
+        return ResponseEntity.ok(ApiResponse.success(
+                Map.of("accessToken", accessToken),
+                "로그인 성공"
+        ));
     }
 
     @Operation(summary = "accessToken 발급")

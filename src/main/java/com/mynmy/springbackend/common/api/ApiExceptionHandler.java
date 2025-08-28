@@ -35,7 +35,7 @@ public class ApiExceptionHandler {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         pd.setTitle("Not Found");
         pd.setType(URI.create("https://api.mynmy.com/errors/not-found"));
-        pd.setProperty("instance", req.getRequestURI());
+        pd.setInstance(URI.create(req.getRequestURI()));
         pd.setProperty("correlationId", UUID.randomUUID().toString());
         return pd;
     }
@@ -46,7 +46,7 @@ public class ApiExceptionHandler {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         pd.setTitle("Internal Server Error");
         pd.setType(URI.create("https://api.mynmy.com/errors/internal"));
-        pd.setProperty("instance", req.getRequestURI());
+        pd.setInstance(URI.create(req.getRequestURI()));
         pd.setProperty("correlationId", UUID.randomUUID().toString());
         return pd;
     }

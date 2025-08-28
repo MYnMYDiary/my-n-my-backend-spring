@@ -33,11 +33,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/signup").permitAll()
                         .requestMatchers(
-                                "/",                      // 루트
-                                "/auth/**", // 로그인/회원가입 관련
-                                "/image/**",              // 이미지 접근
+                                "/auth/signup",
+                                "/auth/login",
+                                "/auth/logout",
+                                "/auth/token/access",
                                 "/swagger-ui.html",       // Swagger UI
                                 "/swagger-ui/**",         // Swagger UI 리소스
                                 "/v3/api-docs/**"         // OpenAPI docs
@@ -48,7 +48,7 @@ public class SecurityConfig {
                 // 구글 로그인
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(auth ->
-                                auth.baseUri("/oauth2/login") // ← /oauth2/authorization 대신 /oauth2/login 사용
+                                auth.baseUri("/oauth2/login")
                         )
                         .successHandler(oAuth2SuccessHandler)
                         .userInfoEndpoint(userInfo -> userInfo
