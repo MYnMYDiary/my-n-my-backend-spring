@@ -25,3 +25,8 @@ CREATE TABLE diary (
     CONSTRAINT fk_diary_user
        FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+ALTER TABLE users
+    ADD COLUMN password VARCHAR(100);
+ALTER TABLE users
+    ADD COLUMN role VARCHAR(100);
