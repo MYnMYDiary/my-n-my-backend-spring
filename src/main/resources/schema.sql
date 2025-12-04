@@ -7,7 +7,9 @@ CREATE TABLE users (
     name           VARCHAR(100)  NULL,
     email          VARCHAR(255)  NULL,
     nickname       VARCHAR(100)  NULL,
-    profile_image  VARCHAR(500)  NULL
+    profile_image  VARCHAR(500)  NULL,
+    password VARCHAR(100),
+    role VARCHAR(100)
 );
 
 CREATE TABLE diary (
@@ -25,3 +27,8 @@ CREATE TABLE diary (
     CONSTRAINT fk_diary_user
        FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+ALTER TABLE users
+    ADD COLUMN password VARCHAR(100);
+ALTER TABLE users
+    ADD COLUMN role VARCHAR(100);
