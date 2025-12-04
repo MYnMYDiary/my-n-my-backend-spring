@@ -36,4 +36,11 @@ public class User extends BaseEntity {
       private String profile_image;
 
       private LocalDate deleted_at;
+
+      public User(String email, String password, String name, String nickname) {
+            this.email = email;
+            this.password = password;
+            this.name = name;
+            this.nickname = nickname;
+      }
 }
